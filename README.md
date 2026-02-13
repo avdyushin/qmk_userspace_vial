@@ -8,6 +8,12 @@ Vial has to be build from `vial-qmk`.
 
 * Drop + OLKB Preonic V3
   - 1u spaces Vial configuration
+  - Custom keycodes added to Vial
   - Command key combination Left Ctrl + Right Ctrl
   - Caps Word activated by both Shifts
   - Added extra navigation layer
+
+## Usage examples
+
+- Add QMK userspace: `qmk config user.overlay_dir="$(realpath qmk_userspace_vial)"`
+- Flash Preonic: `qmk flash -kb preonic/rev3_drop -km vial`, press Lower + Raise + Q to enter DFU mode
