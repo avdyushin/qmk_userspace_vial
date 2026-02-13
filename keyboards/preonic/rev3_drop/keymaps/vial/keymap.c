@@ -26,7 +26,7 @@ enum preonic_layers {
 };
 
 enum preonic_keycodes {
-  QWERTY = SAFE_RANGE,
+  QWERTY = QK_KB_0,
   LOWER,
   RAISE,
   BACKLIT
