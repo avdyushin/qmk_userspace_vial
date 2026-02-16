@@ -15,6 +15,7 @@
  */
 
 #include QMK_KEYBOARD_H
+#include "audio.h"
 #include "muse.h"
 
 enum preonic_layers {
@@ -33,6 +34,9 @@ enum preonic_keycodes {
 };
 
 #define NAV_ESC LT(_NAV, KC_ESC)
+
+// Send KC_RSFT together with BACKLIT
+#undef BACKLIT_SHIFT
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -161,7 +165,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           break;
         case BACKLIT:
           if (record->event.pressed) {
-            register_code(KC_RSFT);
+            #ifdef BACKLIT_SHIFT
+              register_code(KC_RSFT);
+            #endif
             #ifdef BACKLIGHT_ENABLE
               backlight_step();
             #endif
@@ -172,7 +178,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             writePinLow(E6);
             #endif
           } else {
-            unregister_code(KC_RSFT);
+            #ifdef BACKLIT_SHIFT
+              unregister_code(KC_RSFT);
+            #endif
             #ifdef __AVR__
             writePinHigh(E6);
             #endif
@@ -182,6 +190,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     return true;
 };
+
+void caps_word_set_user(bool active) {
+    #ifdef AUDIO_ENABLE
+    if (active) {
+        float song[][2] = SONG(CAPS_LOCK_ON_SOUND);
+        PLAY_SONG(song);
+    } else {
+        float song[][2] = SONG(CAPS_LOCK_OFF_SOUND);
+        PLAY_SONG(song);
+    }
+    #endif
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+    case _QWERTY:
+        rgblight_setrgb(0x00,  0xFF, 0xFF);
+        break;
+    case _RAISE:
+        rgblight_setrgb(0x00,  0x00, 0xFF);
+        break;
+    case _LOWER:
+        rgblight_setrgb(0xFF,  0x00, 0x00);
+        break;
+    case _ADJUST:
+        rgblight_setrgb(0x00, 0xFF, 0x00);
+        break;
+    case _NAV:
+        rgblight_setrgb(0x7A,  0x00, 0xFF);
+        break;
+    }
+    return state;
+}
 
 bool muse_mode = false;
 uint8_t last_muse_note = 0;
