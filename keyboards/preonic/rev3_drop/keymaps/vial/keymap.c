@@ -136,63 +136,63 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
+    switch (keycode) {
         case QWERTY:
-          if (record->event.pressed) {
-            set_single_persistent_default_layer(_QWERTY);
-          }
-          return false;
-          break;
+            if (record->event.pressed) {
+                set_single_persistent_default_layer(_QWERTY);
+            }
+            return false;
+            break;
         case LOWER:
-          if (record->event.pressed) {
-            layer_on(_LOWER);
-            update_tri_layer(_LOWER, _RAISE, _ADJUST);
-          } else {
-            layer_off(_LOWER);
-            update_tri_layer(_LOWER, _RAISE, _ADJUST);
-          }
-          return false;
-          break;
+            if (record->event.pressed) {
+                layer_on(_LOWER);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
+            } else {
+                layer_off(_LOWER);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
+            }
+            return false;
+            break;
         case RAISE:
-          if (record->event.pressed) {
-            layer_on(_RAISE);
-            update_tri_layer(_LOWER, _RAISE, _ADJUST);
-          } else {
-            layer_off(_RAISE);
-            update_tri_layer(_LOWER, _RAISE, _ADJUST);
-          }
-          return false;
-          break;
+            if (record->event.pressed) {
+                layer_on(_RAISE);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
+            } else {
+                layer_off(_RAISE);
+                update_tri_layer(_LOWER, _RAISE, _ADJUST);
+            }
+            return false;
+            break;
         case BACKLIT:
-          if (record->event.pressed) {
-            #ifdef BACKLIT_SHIFT
-              register_code(KC_RSFT);
-            #endif
-            #ifdef BACKLIGHT_ENABLE
-              backlight_step();
-            #endif
-            #ifdef RGBLIGHT_ENABLE
-              rgblight_step();
-            #endif
-            #ifdef __AVR__
-            writePinLow(E6);
-            #endif
-          } else {
-            #ifdef BACKLIT_SHIFT
-              unregister_code(KC_RSFT);
-            #endif
-            #ifdef __AVR__
-            writePinHigh(E6);
-            #endif
-          }
-          return false;
-          break;
-      }
+            if (record->event.pressed) {
+#ifdef BACKLIT_SHIFT
+                register_code(KC_RSFT);
+#endif
+#ifdef BACKLIGHT_ENABLE
+                backlight_step();
+#endif
+#ifdef RGBLIGHT_ENABLE
+                rgblight_step();
+#endif
+#ifdef __AVR__
+                writePinLow(E6);
+#endif
+            } else {
+#ifdef BACKLIT_SHIFT
+                unregister_code(KC_RSFT);
+#endif
+#ifdef __AVR__
+                writePinHigh(E6);
+#endif
+            }
+            return false;
+            break;
+    }
     return true;
 };
 
 void caps_word_set_user(bool active) {
-    #ifdef AUDIO_ENABLE
+#ifdef AUDIO_ENABLE
     if (active) {
         float song[][2] = SONG(CAPS_LOCK_ON_SOUND);
         PLAY_SONG(song);
@@ -200,60 +200,60 @@ void caps_word_set_user(bool active) {
         float song[][2] = SONG(CAPS_LOCK_OFF_SOUND);
         PLAY_SONG(song);
     }
-    #endif
+#endif
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
-    case _QWERTY:
-        rgblight_setrgb(0x00,  0xFF, 0xFF);
-        break;
-    case _RAISE:
-        rgblight_setrgb(0x00,  0x00, 0xFF);
-        break;
-    case _LOWER:
-        rgblight_setrgb(0xFF,  0x00, 0x00);
-        break;
-    case _ADJUST:
-        rgblight_setrgb(0x00, 0xFF, 0x00);
-        break;
-    case _NAV:
-        rgblight_setrgb(0x7A,  0x00, 0xFF);
-        break;
+        case _QWERTY:
+            rgblight_setrgb(0x00, 0xFF, 0xFF);
+            break;
+        case _RAISE:
+            rgblight_setrgb(0x00, 0x00, 0xFF);
+            break;
+        case _LOWER:
+            rgblight_setrgb(0xFF, 0x00, 0x00);
+            break;
+        case _ADJUST:
+            rgblight_setrgb(0x00, 0xFF, 0x00);
+            break;
+        case _NAV:
+            rgblight_setrgb(0x7A, 0x00, 0xFF);
+            break;
     }
     return state;
 }
 
-bool muse_mode = false;
-uint8_t last_muse_note = 0;
-uint16_t muse_counter = 0;
-uint8_t muse_offset = 70;
-uint16_t muse_tempo = 50;
+bool     muse_mode      = false;
+uint8_t  last_muse_note = 0;
+uint16_t muse_counter   = 0;
+uint8_t  muse_offset    = 70;
+uint16_t muse_tempo     = 50;
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-  if (muse_mode) {
-    if (IS_LAYER_ON(_RAISE)) {
-      if (clockwise) {
-        muse_offset++;
-      } else {
-        muse_offset--;
-      }
+    if (muse_mode) {
+        if (IS_LAYER_ON(_RAISE)) {
+            if (clockwise) {
+                muse_offset++;
+            } else {
+                muse_offset--;
+            }
+        } else {
+            if (clockwise) {
+                muse_tempo += 1;
+            } else {
+                muse_tempo -= 1;
+            }
+        }
     } else {
-      if (clockwise) {
-        muse_tempo+=1;
-      } else {
-        muse_tempo-=1;
-      }
+        if (clockwise) {
+            register_code(KC_PGDN);
+            unregister_code(KC_PGDN);
+        } else {
+            register_code(KC_PGUP);
+            unregister_code(KC_PGUP);
+        }
     }
-  } else {
-    if (clockwise) {
-      register_code(KC_PGDN);
-      unregister_code(KC_PGDN);
-    } else {
-      register_code(KC_PGUP);
-      unregister_code(KC_PGUP);
-    }
-  }
     return true;
 }
 
@@ -298,11 +298,11 @@ void matrix_scan_user(void) {
 }
 
 bool music_mask_user(uint16_t keycode) {
-  switch (keycode) {
-    case RAISE:
-    case LOWER:
-      return false;
-    default:
-      return true;
-  }
+    switch (keycode) {
+        case RAISE:
+        case LOWER:
+            return false;
+        default:
+            return true;
+    }
 }
