@@ -10,8 +10,9 @@ Vial has to be build from `vial-qmk`.
   - 1u spaces Vial configuration
   - Custom keycodes added to Vial
   - Command key combination Left Ctrl + Right Ctrl
-  - Caps Word activated by both Shifts
+  - Caps Word activated by both Shifts + play sound
   - Added extra navigation layer
+  - Backlight color per layer
 
 ## Usage examples
 
