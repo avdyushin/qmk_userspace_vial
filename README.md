@@ -13,6 +13,9 @@ Vial has to be build from `vial-qmk`.
   - Caps Word activated by both Shifts + play sound
   - Added extra navigation layer
   - Backlight color per layer
+* Franky36
+  - Aligned layout with Preonic
+  - Added `*.vil` file with required combos
 
 ## Usage examples
 
