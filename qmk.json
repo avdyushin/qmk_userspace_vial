@@ -1,6 +1,7 @@
 {
     "userspace_version": "1.0",
     "build_targets": [
-        ["preonic/rev3_drop", "vial"]
+        ["preonic/rev3_drop", "vial"],
+        ["handwired/franky36", "vial"]
     ]
 }
